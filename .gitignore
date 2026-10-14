@@ -1,0 +1,19 @@
+#Docs
+.txt
+
+# Segredos e banco local
+.env
+data/
+
+# .NET
+bin/
+obj/
+*.user
+
+# Rider / Visual Studio
+.idea/
+.vs/
+
+# React 
+node_modules/
+dist/
