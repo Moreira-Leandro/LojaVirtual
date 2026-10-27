@@ -2,6 +2,6 @@ namespace Domain.Enums;
 
 public enum StatusProduto
 {
-    Desativado = 0,
-    Ativo = 1
+    Ativo = 1,
+    Desativado = 2
 }
