@@ -1,5 +1,6 @@
 using Domain.Entities;
 using Domain.Interfaces;
+using Infrastructure.Mappers;
 using Npgsql;
 
 namespace Infrastructure.Repositories;
@@ -31,19 +32,67 @@ public class ProdutoDAO : IProdutoRepository
 
     }
 
-    public Task<Produto?> BuscarPorIdAsync(int id)
+    public async Task<Produto?> BuscarPorIdAsync(int id)
     {
-        throw new NotImplementedException();
+        string query = "SELECT id, nome, preco, estoque, status FROM produtos WHERE id=@id;";
+
+        await using NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
+        await connection.OpenAsync();
+
+        await using NpgsqlCommand command = new NpgsqlCommand(query, connection);
+        command.Parameters.AddWithValue("id", id);
+
+        using NpgsqlDataReader reader = await command.ExecuteReaderAsync();
+
+        if (!await reader.ReadAsync())
+            return null;
+
+        return ProdutoMap.MapearProduto(reader);
     }
 
-    public Task<List<Produto>> BuscarTodosAsync()
+    public async Task<List<Produto>> BuscarTodosAsync()
     {
-        throw new NotImplementedException();
+
+        List<Produto> produtos = [];
+        
+        string query = "SELECT id, nome, preco, estoque, status FROM produtos";
+
+        await using NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
+        await connection.OpenAsync();
+
+        using NpgsqlCommand command = new NpgsqlCommand(query, connection);
+        using NpgsqlDataReader reader = await command.ExecuteReaderAsync();
+
+        while (await reader.ReadAsync())
+        {
+            Produto produto = ProdutoMap.MapearProduto(reader);
+            produtos.Add(produto);
+        }
+
+        return produtos;
     }
 
-    public Task<List<Produto>> BuscarAtivosAsync()
+    public async Task<List<Produto>> BuscarAtivosAsync()
     {
-        throw new NotImplementedException();
+
+        List<Produto> produtos = [];
+        
+        string query = "SELECT * FROM produtos WHERE status = 1";
+
+        await using NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
+        await connection.OpenAsync();
+
+        using NpgsqlCommand command = new NpgsqlCommand(query, connection);
+        using NpgsqlDataReader reader = await command.ExecuteReaderAsync();
+
+        while (await reader.ReadAsync())
+        {
+            Produto produto = ProdutoMap.MapearProduto(reader);
+            produtos.Add(produto);
+        }
+
+        return produtos;
+
     }
 
     public Task AtualizarAsync(Produto produto)
