@@ -9,6 +9,6 @@ public interface IProdutoRepository
      Task<Produto?> BuscarPorIdAsync(int id);
      Task<List<Produto>> BuscarTodosAsync();
      Task<List<Produto>> BuscarAtivosAsync();
-     Task AtualizarAsync(Produto produto);
+     Task<int> AtualizarAsync(Produto produto);
 
 }

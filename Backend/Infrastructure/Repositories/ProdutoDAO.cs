@@ -95,8 +95,22 @@ public class ProdutoDAO : IProdutoRepository
 
     }
 
-    public Task AtualizarAsync(Produto produto)
+    public async Task<int> AtualizarAsync(Produto produto)
     {
-        throw new NotImplementedException();
+        string query = "UPDATE produtos SET nome=@nome, preco=@preco, estoque=@estoque, status=@status WHERE id=@id;";
+
+        await using NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
+        await connection.OpenAsync();
+
+        using NpgsqlCommand command = new NpgsqlCommand(query, connection);
+        command.Parameters.AddWithValue("nome", produto.Nome);
+        command.Parameters.AddWithValue("preco", produto.Preco);
+        command.Parameters.AddWithValue("estoque", produto.Estoque);
+        command.Parameters.AddWithValue("status", (short)produto.Status);
+        command.Parameters.AddWithValue("id", produto.Id);
+
+        int linhasAfetas = await command.ExecuteNonQueryAsync();
+
+        return linhasAfetas;
     }
 }

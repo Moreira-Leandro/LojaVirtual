@@ -14,7 +14,7 @@ public class ProdutoController(IProdutoRepository repository) : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Criar(ProdutoCreateRequest request)
     {
-        Produto produto = new Produto(request.nome, request.preco, request.estoque);
+        Produto produto = new Produto(request.id, request.nome, request.preco, request.estoque);
         int id = await repository.CriarAsync(produto);
         
         return Created($"api/produtos/{id}", new {id});
@@ -54,6 +54,20 @@ public class ProdutoController(IProdutoRepository repository) : ControllerBase
             return NotFound("Nenhum produto ativo");
 
         return Ok(produtos);
+    }
+    
+    // ATUALIZAR PRODUTO
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Alterar(int id, [FromBody] ProdutoUpdateRequest request)
+    {
+        Produto produto = await repository.BuscarPorIdAsync(id);
+
+        if (produto == null)
+            return NotFound("Produto não encontrado");
+        
+        produto.Atualizar(request.nome, request.preco, request.estoque, request.status);
+        
+        return Ok(await repository.AtualizarAsync(produto));
     }
     
 }

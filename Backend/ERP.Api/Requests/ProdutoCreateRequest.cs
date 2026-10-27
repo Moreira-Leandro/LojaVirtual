@@ -1,3 +1,3 @@
 namespace ERP.Api.Requests;
 
-public record ProdutoCreateRequest(string nome, decimal preco, int estoque);
+public record ProdutoCreateRequest(int id, string nome, decimal preco, int estoque);

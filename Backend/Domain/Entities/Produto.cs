@@ -1,5 +1,6 @@
 using Domain.Enums;
 using Domain.Exceptions;
+using Microsoft.VisualBasic.CompilerServices;
 
 namespace Domain.Entities;
 
@@ -14,32 +15,35 @@ public class Produto
 
     private Produto(){}
 
-    public Produto(string nome, decimal preco, int estoque)
+    public Produto(int id, string nome, decimal preco, int estoque)
     {
-        Validar(nome, preco);
-        if (estoque < 0)
-            throw new DomainException("Estoque não pode ser negativo");
+        Validar(nome, preco, estoque);
 
+        Id = id;
         Nome = nome;
         Preco = preco;
         Estoque = estoque;
     }
 
-    private static void Validar(string nome, decimal preco)
+    private static void Validar(string nome, decimal preco, int estoque)
     {
         if (string.IsNullOrWhiteSpace(nome))
             throw new DomainException("Nome inválido");
         if (preco <= 0)
             throw new DomainException("Preço inválido");
+        if (estoque < 0)
+            throw new DomainException("Estoque não pode ser negativo");
     }
     
-    public void Atualizar(string nome, decimal preco)
+    public void Atualizar(string nome, decimal preco, int estoque, StatusProduto status)
     {
         
-        Validar(nome, preco);
+        Validar(nome, preco, estoque);
         
         Nome = nome;
         Preco = preco;
+        Estoque = estoque;
+        Status = status;
     }
 
     public void Inativar()
