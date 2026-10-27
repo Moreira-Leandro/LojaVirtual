@@ -5,7 +5,7 @@ namespace Domain.Interfaces;
 public interface IProdutoRepository
 {
      
-     Task CriarAsync(Produto produto);
+     Task<int> CriarAsync(Produto produto);
      Task<Produto?> BuscarPorIdAsync(int id);
      Task<List<Produto>> BuscarTodosAsync();
      Task<List<Produto>> BuscarAtivosAsync();
